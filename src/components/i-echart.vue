@@ -190,9 +190,9 @@
      * @returns {boolean}
      */
     function isValidOption(option) {
-        return isObject(option) && !isEmptyObject(option)
-            && hasSeriesKey(option)
-            && isSeriesArray(option) && !isSeriesEmpty(option)
+        return isObject(option) && !isEmptyObject(option) &&
+            hasSeriesKey(option) &&
+            isSeriesArray(option) && !isSeriesEmpty(option)
     }
 
     /**
