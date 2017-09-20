@@ -49,7 +49,7 @@
         name: 'echarts',
         props: {
             option: {
-                default() {
+                default () {
                     return {}
                 }
             },
@@ -69,14 +69,15 @@
                 default: ''
             }
         },
-        data() {
+        data () {
             return {
                 /**
                  * 为该组件生成具有唯一 ID DOM
                  */
                 randomId: 'echarts-dom' + Date.now() + Math.random(),
                 myEcharts: null,
-
+                scrollThrottle: 200,
+                windowResizeThrottle: 500,
                 /**
                  * option 是否不合法
                  */
@@ -85,7 +86,7 @@
                 /**
                  * 滚动事件实名函数
                  */
-                scrollEvent: _.throttle(this.checkPosition, 500),
+                scrollEvent: _.throttle(this.checkPosition, this.scrollThrottle),
 
                 /**
                  * 页面是否已经滚动到了合适位置
@@ -93,7 +94,7 @@
                 isPositionReady: false
             }
         },
-        mounted() {
+        mounted () {
             /**
              * 获取 ehcarts 挂载元素
              */
@@ -122,23 +123,21 @@
              */
             window.addEventListener('resize', _.throttle(() => {
                 this.myEcharts.resize()
-                console.log('---')
-            }, 500))
+            }, this.windowResizeThrottle))
         },
         watch: {
 
             /**
              * 对 option 的变化进行监控
              */
-            option(option) {
+            option (option) {
                 this.checkAndSetOption()
             },
 
             /**
              * 主动调用 resize 的标识
              */
-            resizeSignature() {
-                console.log('resize')
+            resizeSignature () {
                 this.myEcharts.resize()
             }
         },
@@ -147,7 +146,7 @@
              * 检测窗口滚动位置
              * 用以进行延迟加载
              */
-            checkPosition() {
+            checkPosition () {
                 let windowHeight = document.documentElement.clientHeight || window.innerHeight
                 let scrollTop = document.documentElement.scrollTop || document.body.scrollTop
                 let windowBottom = +scrollTop + +windowHeight
@@ -163,7 +162,7 @@
              * 对 option 进行检测
              * 并进行 setOption
              */
-            checkAndSetOption() {
+            checkAndSetOption () {
                 let option = this.option
                 if (this.isPositionReady !== true) return
                 if (isValidOption(option)) {
@@ -178,7 +177,7 @@
              * echarts 点击事件
              * @param params
              */
-            echartsClicked(params) {
+            echartsClicked (params) {
                 this.$emit('echarts-clicked', params)
             }
         }
@@ -189,7 +188,7 @@
      * @param option
      * @returns {boolean}
      */
-    function isValidOption(option) {
+    function isValidOption (option) {
         return isObject(option) && !isEmptyObject(option) &&
             hasSeriesKey(option) &&
             isSeriesArray(option) && !isSeriesEmpty(option)
@@ -200,7 +199,7 @@
      * @param option
      * @returns {boolean}
      */
-    function isObject(option) {
+    function isObject (option) {
         return Object.prototype.isPrototypeOf(option)
     }
 
@@ -209,7 +208,7 @@
      * @param option
      * @returns {boolean}
      */
-    function isEmptyObject(option) {
+    function isEmptyObject (option) {
         return Object.keys(option).length === 0
     }
 
@@ -218,7 +217,7 @@
      * @param option
      * @returns {boolean}
      */
-    function hasSeriesKey(option) {
+    function hasSeriesKey (option) {
         return !!option['series']
     }
 
@@ -227,7 +226,7 @@
      * @param option
      * @returns {boolean}
      */
-    function isSeriesArray(option) {
+    function isSeriesArray (option) {
         return Array.isArray(option['series'])
     }
 
@@ -236,7 +235,7 @@
      * @param option
      * @returns {boolean}
      */
-    function isSeriesEmpty(option) {
+    function isSeriesEmpty (option) {
         return option['series'].length === 0
     }
 </script>
