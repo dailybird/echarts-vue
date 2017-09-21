@@ -166,7 +166,7 @@
                 let option = this.option
                 if (this.isPositionReady !== true) return
                 if (isValidOption(option)) {
-                    this.myEcharts.setOption(option)
+                    this.myEcharts.setOption(option, true)
                     this.isOptionAbnormal = false
                 } else {
                     this.isOptionAbnormal = true
