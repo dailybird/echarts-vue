@@ -35,7 +35,7 @@
         <div class="shadow" v-show="!isLoading && isOptionAbnormal">
             数据为空
         </div>
-        <div class="wrap-container" v-show="!isLoading && !isOptionAbnormal">
+        <div class="wrap-container" :style="{visibility: isChartVisible ? 'visible' : 'hidden'}">
             <div class="echarts" :id="randomId"></div>
         </div>
     </div>
@@ -117,6 +117,11 @@
                         echarts.registerMap(map['name'], map['data'])
                     }
                 }
+            }
+        },
+        computed: {
+            isChartVisible(){
+                return !this.isLoading && !this.isOptionAbnormal
             }
         },
         mounted () {
