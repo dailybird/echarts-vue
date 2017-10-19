@@ -8,6 +8,8 @@ option: echarts 配置
 isLoading: 若置为 true，则会显示加载提示
 
 resizeSignature: 可通过该值的改变触发组件的 resize 
+
+maps: 想要注册的地图组件，格式为对象数组，对象包括：name: 注册名，data: 地图的 json 数据
 ```
 
 详细介绍可访问以下博客查看：
