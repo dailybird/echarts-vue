@@ -22,7 +22,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        font-size: 1rem;
+        font-size: .9rem;
         color: #8590a6;
     }
 </style>
@@ -67,6 +67,15 @@
              */
             resizeSignature: {
                 default: ''
+            },
+            /**
+             * 需要注册的地图
+             */
+            maps: {
+                type: Array,
+                default () {
+                    return []
+                }
             }
         },
         data () {
@@ -94,6 +103,22 @@
                 isPositionReady: false
             }
         },
+        created () {
+            /**
+             * 如果使用方需要调用地图组件
+             * 即注册地图元素
+             * 可通过传参的方式传入
+             */
+            let maps = this.maps
+            if (maps.count !== 0) {
+                for (let index in maps) {
+                    let map = maps[index]
+                    if (isObject(map) && map['name'] !== undefined && map['data'] !== undefined) {
+                        echarts.registerMap(map['name'], map['data'])
+                    }
+                }
+            }
+        },
         mounted () {
             /**
              * 获取 ehcarts 挂载元素
@@ -103,6 +128,7 @@
             if (!$echartsDOM) return
 
             let myEcharts = echarts.init($echartsDOM)
+
             myEcharts.on('click', params => {
                 this.echartsClicked(params)
             })
