@@ -76,6 +76,12 @@
                 default () {
                     return []
                 }
+            },
+            /**
+             * 用于绑定滚动监听的 DOM 元素的 ID 值，不传递时会使用 window
+             */
+            scrollDomId: {
+                default: null
             }
         },
         data () {
@@ -120,7 +126,21 @@
             }
         },
         computed: {
-            isChartVisible(){
+            /**
+             * 获取可滚动的 DOM 元素
+             * @returns {Window}
+             */
+            onScrollDOM () {
+                let scrollDom = window
+                if (this.scrollDomId !== null) {
+                    let tempDom = document.querySelector('#' + this.scrollDomId)
+                    if (tempDom !== null) {
+                        scrollDom = tempDom
+                    }
+                }
+                return scrollDom
+            },
+            isChartVisible () {
                 return !this.isLoading && !this.isOptionAbnormal
             }
         },
@@ -145,9 +165,9 @@
             this.checkPosition()
 
             /**
-             * 对窗口滚动事件进行监控
+             * 对滚动事件进行监控
              */
-            window.addEventListener('scroll', this.scrollEvent)
+            this.onScrollDOM.addEventListener('scroll', this.scrollEvent)
 
             /**
              * 对浏览器窗口大小改变进行监控
@@ -157,7 +177,6 @@
             }, this.windowResizeThrottle))
         },
         watch: {
-
             /**
              * 对 option 的变化进行监控
              */
@@ -179,7 +198,7 @@
              */
             checkPosition () {
                 let windowHeight = document.documentElement.clientHeight || window.innerHeight
-                let scrollTop = document.documentElement.scrollTop || document.body.scrollTop
+                let scrollTop = this.onScrollDOM.scrollTop || document.documentElement.scrollTop || document.body.scrollTop
                 let windowBottom = +scrollTop + +windowHeight
                 let selfTop = _.get(this.$refs, 'selfEcharts.offsetTop', 0)
                 if (windowBottom >= selfTop) {
@@ -221,8 +240,8 @@
      */
     function isValidOption (option) {
         return isObject(option) && !isEmptyObject(option) &&
-            hasSeriesKey(option) &&
-            isSeriesArray(option) && !isSeriesEmpty(option)
+          hasSeriesKey(option) &&
+          isSeriesArray(option) && !isSeriesEmpty(option)
     }
 
     /**
