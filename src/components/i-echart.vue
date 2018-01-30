@@ -180,7 +180,7 @@
             /**
              * 对 option 的变化进行监控
              */
-            option (option) {
+            option () {
                 this.checkAndSetOption()
             },
 
