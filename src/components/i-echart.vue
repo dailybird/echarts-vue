@@ -42,15 +42,15 @@
 </template>
 
 <script>
-    import echarts from 'echarts'
-    import _ from 'lodash'
+    import echarts from 'echarts';
+    import _ from 'lodash';
 
     export default {
         name: 'echarts',
         props: {
             option: {
                 default () {
-                    return {}
+                    return {};
                 }
             },
 
@@ -74,7 +74,7 @@
             maps: {
                 type: Array,
                 default () {
-                    return []
+                    return [];
                 }
             },
             /**
@@ -107,7 +107,7 @@
                  * 页面是否已经滚动到了合适位置
                  */
                 isPositionReady: false
-            }
+            };
         },
         created () {
             /**
@@ -115,12 +115,12 @@
              * 即注册地图元素
              * 可通过传参的方式传入
              */
-            let maps = this.maps
+            const maps = this.maps;
             if (maps.count !== 0) {
-                for (let index in maps) {
-                    let map = maps[index]
+                for (const index in maps) {
+                    const map = maps[index];
                     if (isObject(map) && map['name'] !== undefined && map['data'] !== undefined) {
-                        echarts.registerMap(map['name'], map['data'])
+                        echarts.registerMap(map['name'], map['data']);
                     }
                 }
             }
@@ -131,64 +131,64 @@
              * @returns {Window}
              */
             onScrollDOM () {
-                let scrollDom = window
+                let scrollDom = window;
                 if (this.scrollDomId !== null) {
-                    let tempDom = document.querySelector('#' + this.scrollDomId)
+                    const tempDom = document.querySelector('#' + this.scrollDomId);
                     if (tempDom !== null) {
-                        scrollDom = tempDom
+                        scrollDom = tempDom;
                     }
                 }
-                return scrollDom
+                return scrollDom;
             },
             isChartVisible () {
-                return !this.isLoading && !this.isOptionAbnormal
+                return !this.isLoading && !this.isOptionAbnormal;
             }
         },
         mounted () {
             /**
              * 获取 ehcarts 挂载元素
              */
-            let $echartsDOM = document.getElementById(this.randomId)
+            const $echartsDOM = document.getElementById(this.randomId);
 
-            if (!$echartsDOM) return
+            if (!$echartsDOM) return;
 
-            let myEcharts = echarts.init($echartsDOM)
+            const myEcharts = echarts.init($echartsDOM);
 
             myEcharts.on('click', params => {
-                this.echartsClicked(params)
-            })
-            this.myEcharts = myEcharts
+                this.echartsClicked(params);
+            });
+            this.myEcharts = myEcharts;
 
             /**
              * 初始化时进行一次检测
              */
-            this.checkPosition()
+            this.checkPosition();
 
             /**
              * 对滚动事件进行监控
              */
-            this.onScrollDOM.addEventListener('scroll', this.scrollEvent)
+            this.onScrollDOM.addEventListener('scroll', this.scrollEvent);
 
             /**
              * 对浏览器窗口大小改变进行监控
              */
             window.addEventListener('resize', _.throttle(() => {
-                this.myEcharts.resize()
-            }, this.windowResizeThrottle))
+                this.myEcharts.resize();
+            }, this.windowResizeThrottle));
         },
         watch: {
             /**
              * 对 option 的变化进行监控
              */
             option () {
-                this.checkAndSetOption()
+                this.checkAndSetOption();
             },
 
             /**
              * 主动调用 resize 的标识
              */
             resizeSignature () {
-                this.myEcharts.resize()
+                this.myEcharts.resize();
             }
         },
         methods: {
@@ -197,14 +197,14 @@
              * 用以进行延迟加载
              */
             checkPosition () {
-                let windowHeight = document.documentElement.clientHeight || window.innerHeight
-                let scrollTop = this.onScrollDOM.scrollTop || document.documentElement.scrollTop || document.body.scrollTop
-                let windowBottom = +scrollTop + +windowHeight
-                let selfTop = _.get(this.$refs, 'selfEcharts.offsetTop', 0)
+                const windowHeight = document.documentElement.clientHeight || window.innerHeight;
+                const scrollTop = this.onScrollDOM.scrollTop || document.documentElement.scrollTop || document.body.scrollTop;
+                const windowBottom = +scrollTop + +windowHeight;
+                const selfTop = _.get(this.$refs, 'selfEcharts.offsetTop', 0);
                 if (windowBottom >= selfTop) {
-                    this.isPositionReady = true
-                    this.checkAndSetOption()
-                    window.removeEventListener('scroll', this.scrollEvent)
+                    this.isPositionReady = true;
+                    this.checkAndSetOption();
+                    window.removeEventListener('scroll', this.scrollEvent);
                 }
             },
 
@@ -213,13 +213,13 @@
              * 并进行 setOption
              */
             checkAndSetOption () {
-                let option = this.option
-                if (this.isPositionReady !== true) return
+                const option = this.option;
+                if (this.isPositionReady !== true) return;
                 if (isValidOption(option)) {
-                    this.myEcharts.setOption(option, true)
-                    this.isOptionAbnormal = false
+                    this.myEcharts.setOption(option, true);
+                    this.isOptionAbnormal = false;
                 } else {
-                    this.isOptionAbnormal = true
+                    this.isOptionAbnormal = true;
                 }
             },
 
@@ -228,10 +228,10 @@
              * @param params
              */
             echartsClicked (params) {
-                this.$emit('echarts-clicked', params)
+                this.$emit('echarts-clicked', params);
             }
         }
-    }
+    };
 
     /**
      * option 是否合法
@@ -240,8 +240,8 @@
      */
     function isValidOption (option) {
         return isObject(option) && !isEmptyObject(option) &&
-          hasSeriesKey(option) &&
-          isSeriesArray(option) && !isSeriesEmpty(option)
+            hasSeriesKey(option) &&
+            isSeriesArray(option) && !isSeriesEmpty(option);
     }
 
     /**
@@ -250,7 +250,7 @@
      * @returns {boolean}
      */
     function isObject (option) {
-        return Object.prototype.isPrototypeOf(option)
+        return Object.prototype.isPrototypeOf(option);
     }
 
     /**
@@ -259,7 +259,7 @@
      * @returns {boolean}
      */
     function isEmptyObject (option) {
-        return Object.keys(option).length === 0
+        return Object.keys(option).length === 0;
     }
 
     /**
@@ -268,7 +268,7 @@
      * @returns {boolean}
      */
     function hasSeriesKey (option) {
-        return !!option['series']
+        return !!option['series'];
     }
 
     /**
@@ -277,7 +277,7 @@
      * @returns {boolean}
      */
     function isSeriesArray (option) {
-        return Array.isArray(option['series'])
+        return Array.isArray(option['series']);
     }
 
     /**
@@ -286,6 +286,6 @@
      * @returns {boolean}
      */
     function isSeriesEmpty (option) {
-        return option['series'].length === 0
+        return option['series'].length === 0;
     }
 </script>
