@@ -42,7 +42,6 @@
 </template>
 
 <script>
-    import echarts from 'echarts';
     import _ from 'lodash';
 
     export default {
@@ -102,6 +101,13 @@
                  * 滚动事件实名函数
                  */
                 scrollEvent: _.throttle(this.checkPosition, this.scrollThrottle),
+
+                /**
+                 * 窗口大小调整事件
+                 */
+                windowResizeEvent: _.throttle(() => {
+                    this.myEcharts.resize();
+                }, this.windowResizeThrottle),
 
                 /**
                  * 页面是否已经滚动到了合适位置
@@ -172,9 +178,7 @@
             /**
              * 对浏览器窗口大小改变进行监控
              */
-            window.addEventListener('resize', _.throttle(() => {
-                this.myEcharts.resize();
-            }, this.windowResizeThrottle));
+            window.addEventListener('resize', this.windowResizeEvent);
         },
         watch: {
             /**
@@ -190,6 +194,9 @@
             resizeSignature () {
                 this.myEcharts.resize();
             }
+        },
+        beforeDestroy () {
+            window.removeEventListener('resize', this.windowResizeEvent);
         },
         methods: {
             /**
