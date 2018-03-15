@@ -204,7 +204,7 @@
                 if (windowBottom >= selfTop) {
                     this.isPositionReady = true;
                     this.checkAndSetOption();
-                    window.removeEventListener('scroll', this.scrollEvent);
+                    this.onScrollDOM.removeEventListener('scroll', this.scrollEvent);
                 }
             },
 
